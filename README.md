@@ -1,50 +1,61 @@
-# React + TypeScript + Vite
+# College Attendance Tracker Mobile App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A sleek and modern mobile app for students to track their college class attendance, with a beautiful Gen-Z aesthetic.
 
-Currently, two official plugins are available:
+![App Screenshot](https://github.com/Neetil/Attendance-Tracker/blob/main/screenshot.png)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Features
 
-## Expanding the ESLint configuration
+- **Beautiful Dashboard**: View today's classes, overall attendance percentage, and attendance alerts at a glance
+- **Dark/Light Theme Toggle**: Personalized viewing experience with smooth theme transition
+- **Subject-wise Breakdown**: Track attendance for individual subjects with visual progress indicators
+- **Interactive Calendar**: Easily navigate and view your class schedule on any date
+- **Attendance Alerts**: Get notified when your attendance drops below the minimum required percentage
+- **Detailed Statistics**: Analyze your attendance patterns with visual charts and data
+- **Modern UI/UX**: Gen-Z inspired design with smooth gradients, rounded cards, and neumorphic elements
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## Technology Stack
 
-- Configure the top-level `parserOptions` property like this:
+- React + TypeScript
+- Vite for fast development
+- Tailwind CSS for styling
+- Framer Motion for animations
+- Shadcn UI components
+- date-fns for date manipulation
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+## Getting Started
+
+1. Clone the repository:
+```bash
+git clone https://github.com/Neetil/Attendance-Tracker.git
+cd Attendance-Tracker
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
-
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
+2. Install dependencies:
+```bash
+bun install
 ```
+
+3. Start the development server:
+```bash
+bun run dev
+```
+
+## Project Structure
+
+- `/src/components` - React components
+- `/src/contexts` - Context providers (theme, etc.)
+- `/src/data` - Mock data for demonstration
+- `/src/types` - TypeScript type definitions
+
+## Future Enhancements
+
+- Backend integration with real attendance data
+- Push notifications for class reminders
+- QR code / location-based attendance marking
+- Export attendance reports
+- Teacher/Admin panel for managing classes and attendance
+
+## License
+
+MIT
