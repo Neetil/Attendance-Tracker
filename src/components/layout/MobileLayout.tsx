@@ -1,10 +1,13 @@
-import React, { useState, ReactNode } from "react";
+import React, { ReactNode } from "react";
 import { Home, BookOpen, Calendar, BarChart2, User } from "lucide-react";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface MobileLayoutProps {
   children: ReactNode;
+  activeTab: string;
+  onTabChange: (tab: string) => void;
+  onFabClick?: () => void;
 }
 
 interface NavItem {
@@ -13,9 +16,7 @@ interface NavItem {
   path: string;
 }
 
-export function MobileLayout({ children }: MobileLayoutProps) {
-  const [activeTab, setActiveTab] = useState("home");
-
+export function MobileLayout({ children, activeTab, onTabChange, onFabClick }: MobileLayoutProps) {
   const navItems: NavItem[] = [
     { icon: <Home size={22} />, label: "Home", path: "home" },
     { icon: <BookOpen size={22} />, label: "Subjects", path: "subjects" },
@@ -23,10 +24,6 @@ export function MobileLayout({ children }: MobileLayoutProps) {
     { icon: <BarChart2 size={22} />, label: "Stats", path: "stats" },
     { icon: <User size={22} />, label: "Profile", path: "profile" },
   ];
-
-  const handleTabChange = (path: string) => {
-    setActiveTab(path);
-  };
 
   return (
     <div className="flex flex-col h-screen max-w-md mx-auto bg-background">
@@ -61,7 +58,7 @@ export function MobileLayout({ children }: MobileLayoutProps) {
           {navItems.map((item) => (
             <li key={item.path} className="flex-1">
               <button
-                onClick={() => handleTabChange(item.path)}
+                onClick={() => onTabChange(item.path)}
                 className={`w-full py-3 flex flex-col items-center justify-center relative ${
                   activeTab === item.path
                     ? "text-primary"
@@ -91,6 +88,7 @@ export function MobileLayout({ children }: MobileLayoutProps) {
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           className="flex items-center justify-center w-14 h-14 rounded-full gradient-bg text-white shadow-lg"
+          onClick={onFabClick}
         >
           <span className="text-2xl font-bold">+</span>
         </motion.button>
