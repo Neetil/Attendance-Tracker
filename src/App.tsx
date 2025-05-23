@@ -1,5 +1,7 @@
 import { useState } from "react";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { ThemeProvider } from "@/contexts/ThemeContext";
+import { AuthProvider } from "@/contexts/AuthContext";
 import { MobileLayout } from "@/components/layout/MobileLayout";
 import { Dashboard } from "@/components/Dashboard";
 import { Subjects } from "@/components/Subjects";
@@ -7,9 +9,12 @@ import { CalendarView } from "@/components/CalendarView";
 import { Statistics } from "@/components/Statistics";
 import { Profile } from "@/components/Profile";
 import { MarkAttendanceDialog } from "@/components/MarkAttendanceDialog";
+import { LoginPage } from "@/components/auth/LoginPage";
+import { RegisterPage } from "@/components/auth/RegisterPage";
+import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { todayClasses } from "@/data/mockData";
 
-function App() {
+function MainApp() {
   const [activeTab, setActiveTab] = useState('home');
   const [attendanceDialogOpen, setAttendanceDialogOpen] = useState(false);
   const [selectedSession, setSelectedSession] = useState<string | null>(null);
@@ -56,14 +61,12 @@ function App() {
   };
 
   return (
-    <ThemeProvider>
-      <MobileLayout
-        onTabChange={handleTabChange}
-        activeTab={activeTab}
-        onFabClick={() => setAttendanceDialogOpen(true)}
-      >
-        {renderContent()}
-      </MobileLayout>
+    <MobileLayout
+      onTabChange={handleTabChange}
+      activeTab={activeTab}
+      onFabClick={() => setAttendanceDialogOpen(true)}
+    >
+      {renderContent()}
 
       <MarkAttendanceDialog
         open={attendanceDialogOpen}
@@ -71,6 +74,29 @@ function App() {
         onMarkAttendance={handleMarkAttendance}
         session={sessionForDialog}
       />
+    </MobileLayout>
+  );
+}
+
+function App() {
+  return (
+    <ThemeProvider>
+      <AuthProvider>
+        <Router>
+          <Routes>
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
+            <Route
+              path="/*"
+              element={
+                <ProtectedRoute>
+                  <MainApp />
+                </ProtectedRoute>
+              }
+            />
+          </Routes>
+        </Router>
+      </AuthProvider>
     </ThemeProvider>
   );
 }

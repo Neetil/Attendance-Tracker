@@ -1,159 +1,141 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Bell, ChevronRight, HelpCircle, LogOut, Moon, Settings, Shield, User as UserIcon } from "lucide-react";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { Switch } from "@/components/ui/switch";
-import { Card, CardContent } from "@/components/ui/card";
+import { LogOut, User, Mail, Book, School, Calendar, Info, ChevronRight } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
 import { studentProfile } from "@/data/mockData";
-import { useTheme } from "@/contexts/ThemeContext";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export function Profile() {
-  const { theme, toggleTheme } = useTheme();
-  const [notifications, setNotifications] = useState(true);
+  const { user, logout } = useAuth();
+  const [confirmLogout, setConfirmLogout] = useState(false);
+
+  // Use authenticated user data or fallback to student profile
+  const profileData = user || studentProfile;
+
+  // Get initials for avatar
+  const getInitials = (name: string) => {
+    return name
+      .split(' ')
+      .map(part => part[0])
+      .join('')
+      .toUpperCase();
+  };
+
+  const handleLogout = () => {
+    if (confirmLogout) {
+      logout();
+    } else {
+      setConfirmLogout(true);
+      // Reset back to false after 3 seconds
+      setTimeout(() => setConfirmLogout(false), 3000);
+    }
+  };
 
   return (
-    <div className="pb-20">
+    <div className="space-y-6 pb-20">
+      {/* Header */}
       <div className="mb-4">
         <h2 className="text-xl font-heading font-semibold">Profile</h2>
-        <p className="text-sm text-muted-foreground">Manage your preferences</p>
+        <p className="text-sm text-muted-foreground">Manage your details and preferences</p>
       </div>
 
       {/* Profile Card */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3 }}
-      >
-        <Card className="mb-6 neumorphic-light dark:neumorphic-dark">
-          <CardContent className="p-6">
-            <div className="flex items-center gap-4">
-              <Avatar className="w-16 h-16 border-2 border-primary">
-                <AvatarFallback className="bg-primary/10 text-primary text-lg">
-                  {studentProfile.name.split(' ').map(n => n[0]).join('')}
-                </AvatarFallback>
-                <AvatarImage src="" />
-              </Avatar>
+      <Card className="neumorphic-light dark:neumorphic-dark overflow-hidden">
+        <div className="gradient-bg h-24 relative">
+          <motion.div
+            className="absolute -bottom-12 left-4 border-4 border-background rounded-full"
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ delay: 0.2 }}
+          >
+            <Avatar className="h-24 w-24">
+              <AvatarImage src="/avatar-placeholder.png" />
+              <AvatarFallback className="text-xl bg-primary text-primary-foreground">
+                {getInitials(profileData.name)}
+              </AvatarFallback>
+            </Avatar>
+          </motion.div>
+        </div>
 
-              <div>
-                <h3 className="font-medium text-lg">{studentProfile.name}</h3>
-                <p className="text-sm text-muted-foreground">{studentProfile.email}</p>
-                <div className="flex items-center mt-1">
-                  <span className="bg-primary/10 text-primary text-xs px-2 py-0.5 rounded-full">
-                    {studentProfile.department}
-                  </span>
-                  <span className="text-xs text-muted-foreground ml-2">
-                    Year {studentProfile.year}, Semester {studentProfile.semester}
-                  </span>
-                </div>
-              </div>
+        <CardContent className="pt-14 pb-4">
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+          >
+            <h3 className="text-xl font-bold">{profileData.name}</h3>
+            <p className="text-sm text-muted-foreground">{profileData.email}</p>
+          </motion.div>
+        </CardContent>
+      </Card>
+
+      {/* Student Details */}
+      <section>
+        <h3 className="text-md font-semibold mb-3">Student Details</h3>
+        <motion.div
+          className="space-y-3"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.4 }}
+        >
+          <div className="flex items-center p-3 bg-card rounded-lg neumorphic-light dark:neumorphic-dark">
+            <School className="w-5 h-5 text-primary mr-3" />
+            <div className="flex-1">
+              <p className="text-sm font-medium">Department</p>
+              <p className="text-xs text-muted-foreground">{profileData.department}</p>
             </div>
+          </div>
 
-            <div className="mt-5 flex justify-between">
-              <motion.button
-                className="flex flex-col items-center justify-center w-1/3 p-2"
-                whileHover={{ y: -3 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <div className="w-8 h-8 rounded-full flex items-center justify-center bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-300 mb-1">
-                  <UserIcon size={18} />
-                </div>
-                <span className="text-xs">Edit Profile</span>
-              </motion.button>
-
-              <motion.button
-                className="flex flex-col items-center justify-center w-1/3 p-2"
-                whileHover={{ y: -3 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <div className="w-8 h-8 rounded-full flex items-center justify-center bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-300 mb-1">
-                  <Settings size={18} />
-                </div>
-                <span className="text-xs">Settings</span>
-              </motion.button>
-
-              <motion.button
-                className="flex flex-col items-center justify-center w-1/3 p-2"
-                whileHover={{ y: -3 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <div className="w-8 h-8 rounded-full flex items-center justify-center bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-300 mb-1">
-                  <LogOut size={18} />
-                </div>
-                <span className="text-xs">Logout</span>
-              </motion.button>
+          <div className="flex items-center p-3 bg-card rounded-lg neumorphic-light dark:neumorphic-dark">
+            <Book className="w-5 h-5 text-primary mr-3" />
+            <div className="flex-1">
+              <p className="text-sm font-medium">Semester</p>
+              <p className="text-xs text-muted-foreground">Semester {profileData.semester}, Year {profileData.year}</p>
             </div>
-          </CardContent>
-        </Card>
-      </motion.div>
+          </div>
 
-      {/* Settings */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3, delay: 0.1 }}
-      >
-        <Card className="mb-6 overflow-hidden neumorphic-light dark:neumorphic-dark">
-          <CardContent className="p-0">
-            <div className="divide-y">
-              <div className="flex items-center justify-between p-4">
-                <div className="flex items-center">
-                  <Moon className="mr-3 h-5 w-5 text-muted-foreground" />
-                  <span>Dark Mode</span>
-                </div>
-                <Switch
-                  checked={theme === 'dark'}
-                  onCheckedChange={toggleTheme}
-                />
-              </div>
-
-              <div className="flex items-center justify-between p-4">
-                <div className="flex items-center">
-                  <Bell className="mr-3 h-5 w-5 text-muted-foreground" />
-                  <span>Notifications</span>
-                </div>
-                <Switch
-                  checked={notifications}
-                  onCheckedChange={() => setNotifications(!notifications)}
-                />
-              </div>
+          <div className="flex items-center p-3 bg-card rounded-lg neumorphic-light dark:neumorphic-dark">
+            <Calendar className="w-5 h-5 text-primary mr-3" />
+            <div className="flex-1">
+              <p className="text-sm font-medium">Academic Year</p>
+              <p className="text-xs text-muted-foreground">2024-2025</p>
             </div>
-          </CardContent>
-        </Card>
-      </motion.div>
+          </div>
+        </motion.div>
+      </section>
 
-      {/* Support and About */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3, delay: 0.2 }}
-      >
-        <Card className="overflow-hidden neumorphic-light dark:neumorphic-dark">
-          <CardContent className="p-0">
-            <div className="divide-y">
-              <div className="flex items-center justify-between p-4">
-                <div className="flex items-center">
-                  <HelpCircle className="mr-3 h-5 w-5 text-muted-foreground" />
-                  <span>Help & Support</span>
-                </div>
-                <ChevronRight className="h-5 w-5 text-muted-foreground" />
-              </div>
-
-              <div className="flex items-center justify-between p-4">
-                <div className="flex items-center">
-                  <Shield className="mr-3 h-5 w-5 text-muted-foreground" />
-                  <span>Privacy Policy</span>
-                </div>
-                <ChevronRight className="h-5 w-5 text-muted-foreground" />
-              </div>
-
-              <div className="p-4 text-center">
-                <p className="text-xs text-muted-foreground">App Version 1.0.0</p>
-                <p className="text-xs text-muted-foreground mt-1">© 2025 AttendTrack</p>
-              </div>
+      {/* App Settings */}
+      <section>
+        <h3 className="text-md font-semibold mb-3">App Settings</h3>
+        <motion.div
+          className="space-y-3"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.5 }}
+        >
+          <button className="w-full flex items-center justify-between p-3 bg-card rounded-lg neumorphic-light dark:neumorphic-dark">
+            <div className="flex items-center">
+              <Info className="w-5 h-5 text-primary mr-3" />
+              <p className="text-sm font-medium">About App</p>
             </div>
-          </CardContent>
-        </Card>
-      </motion.div>
+            <ChevronRight className="w-4 h-4 text-muted-foreground" />
+          </button>
+        </motion.div>
+      </section>
+
+      {/* Logout Button */}
+      <div className="pt-4">
+        <Button
+          variant="destructive"
+          className="w-full flex items-center justify-center"
+          onClick={handleLogout}
+        >
+          <LogOut className="w-4 h-4 mr-2" />
+          {confirmLogout ? "Confirm logout" : "Logout"}
+        </Button>
+      </div>
     </div>
   );
 }

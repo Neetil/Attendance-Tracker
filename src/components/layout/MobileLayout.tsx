@@ -2,6 +2,8 @@ import React, { ReactNode } from "react";
 import { Home, BookOpen, Calendar, BarChart2, User } from "lucide-react";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { motion, AnimatePresence } from "framer-motion";
+import { useAuth } from "@/contexts/AuthContext";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 interface MobileLayoutProps {
   children: ReactNode;
@@ -17,6 +19,8 @@ interface NavItem {
 }
 
 export function MobileLayout({ children, activeTab, onTabChange, onFabClick }: MobileLayoutProps) {
+  const { user } = useAuth();
+
   const navItems: NavItem[] = [
     { icon: <Home size={22} />, label: "Home", path: "home" },
     { icon: <BookOpen size={22} />, label: "Subjects", path: "subjects" },
@@ -25,15 +29,35 @@ export function MobileLayout({ children, activeTab, onTabChange, onFabClick }: M
     { icon: <User size={22} />, label: "Profile", path: "profile" },
   ];
 
+  // Get initials for avatar
+  const getInitials = (name: string) => {
+    return name
+      .split(' ')
+      .map(part => part[0])
+      .join('')
+      .toUpperCase();
+  };
+
   return (
     <div className="flex flex-col h-screen max-w-md mx-auto bg-background">
       {/* Header */}
       <header className="px-4 py-3 flex justify-between items-center border-b">
         <div>
           <h1 className="font-heading font-bold text-lg gradient-text">AttendTrack</h1>
-          <p className="text-xs text-muted-foreground">Keep your attendance on track</p>
+          <p className="text-xs text-muted-foreground">
+            {user ? `Welcome, ${user.name.split(' ')[0]}` : 'Keep your attendance on track'}
+          </p>
         </div>
-        <ThemeToggle variant="button" />
+        <div className="flex items-center space-x-2">
+          {user && (
+            <Avatar className="h-8 w-8">
+              <AvatarFallback className="bg-primary text-primary-foreground text-xs">
+                {getInitials(user.name)}
+              </AvatarFallback>
+            </Avatar>
+          )}
+          <ThemeToggle variant="button" />
+        </div>
       </header>
 
       {/* Main Content */}
